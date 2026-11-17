@@ -1,13 +1,31 @@
-# CHI Program — Session-First Discovery Prototype
+# CHI Program — Ask CHI Chatbot Prototype
 
-A responsive React/TypeScript prototype for comparing three ways of previewing conference sessions before attendees open them: individual contents, topic summaries, and transparent interest matching.
+A responsive React/TypeScript prototype for testing an embedded, site-aware CHI program chatbot. The surrounding Program, Map, People, and My sections provide the lofi site context; Ask CHI is the primary test surface.
 
 All conference data is fictional and exists only for prototype evaluation.
+
+## What the chatbot can answer
+
+- Session times, dates, rooms, topics, papers, abstracts, and authors.
+- Cross-site questions that connect Program, Map, People, and My.
+- Suggestions grounded in the visitor's selected interests, planned sessions, and saved papers.
+- Room access and sensory conditions available in the prototype data.
+- Clickable source cards that navigate back to the exact page used in an answer.
+
+The browser sends only public prototype context and recent chat turns to the local `/api/chat` endpoint. The API key stays on the server. If the endpoint is not configured or temporarily fails, the UI clearly switches to **Demo mode** and uses a small deterministic fallback so the prototype remains testable.
 
 ## Run locally
 
 ```bash
 npm install
+npm run dev
+```
+
+To use the real AI path, copy `.env.example` to `.env.local` and add a valid server-side key:
+
+```bash
+OPENAI_API_KEY=your_api_key_here
+OPENAI_MODEL=gpt-4.1-mini
 npm run dev
 ```
 
@@ -20,20 +38,37 @@ npm run preview
 
 > Do not use an editor's direct HTML/file preview for `index.html`. The entry file imports TypeScript/React source and must be served by Vite; a direct `file://` preview cannot compile `.tsx` modules.
 
-## Test the three presentation modes
+## AI integration
 
-1. Use the Monday, Tuesday, and Wednesday tabs to switch days.
-2. Switch **Contents**, **Topics**, and **For You** above the session gallery. Sessions remain in the same chronological order.
-3. Open **Edit interests**, change several selections, and close the panel. The **For You** explanations update immediately through deterministic keyword matching.
-4. Open any session card. Expand individual content abstracts, then use **Back to Program** (or the browser back button) to return to the preserved date, mode, interests, and scroll position.
-5. Resize to desktop, tablet, and mobile widths. The gallery moves from three columns to two and then one; date navigation becomes horizontally scrollable on mobile.
+`vite.config.ts` registers the prototype `/api/chat` server route for both `npm run dev` and `npm run preview`. It calls OpenAI's Responses API with Structured Outputs and returns:
+
+```json
+{
+  "answer": "...",
+  "references": [{ "kind": "session", "id": "ai-shared-control" }],
+  "mode": "live",
+  "model": "gpt-4.1-mini"
+}
+```
+
+For the real CHI website, keep the React `Chatbot` component and `buildChatKnowledge()` adapter, and move the same `/api/chat` handler into the site's existing server or serverless runtime. Do not expose `OPENAI_API_KEY` through a `VITE_` environment variable.
+
+## Prototype test flow
+
+1. Ask one of the four suggested questions or type a new one.
+2. Confirm the status changes from **Live AI** to **Demo mode** if the server call fails.
+3. Open a colored source card and verify that it navigates to the referenced Session, Map, People, Program, or My page.
+4. Change Interests and ask for recommendations again; the next request uses the updated visitor context.
+5. Test the floating panel on desktop and the full-screen assistant on mobile.
 
 ## Project structure
 
 ```text
 src/
   components/       UI and interaction components
+    Chatbot.tsx      embedded assistant UI and local fallback
   data/             fictional session data and interest options
+  lib/chatKnowledge.ts  site-data adapter passed to the AI proxy
   lib/relevance.ts  transparent keyword matching logic
   App.tsx            view state, history, and scroll restoration
   styles.css         responsive visual system

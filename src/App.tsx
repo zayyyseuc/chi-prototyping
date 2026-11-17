@@ -9,6 +9,7 @@ import { PeoplePage } from './components/PeoplePage'
 import { ProgramPage } from './components/ProgramPage'
 import { SessionDetail } from './components/SessionDetail'
 import { StartPage } from './components/StartPage'
+import { Chatbot } from './components/Chatbot'
 import { LayoutContext, loadLayout, saveLayout, type Layout } from './lib/layout'
 import { parseRoute, routeToSearch, type Route } from './lib/route'
 
@@ -113,6 +114,7 @@ function App() {
       {showInterests && (
         <InterestSelector selected={interests} onChange={setInterests} onClose={() => setShowInterests(false)} />
       )}
+      <Chatbot interests={interests} onGo={go} />
       <LayoutSwitch layout={layout} onChange={changeLayout} />
     </LayoutContext.Provider>
   )
