@@ -40,6 +40,7 @@ export function ContentItem({ content, index, sessionId, activeKeyword, onKeywor
         {savedContentIds.includes(content.id) && <span className="saved-mark" title="Saved" role="img" aria-label="Saved"><NoteIcon kind="saved" size={16} /></span>}
       </span>
       <div className="content-body">
+        <p className="content-time">{content.startTime}–{content.endTime}</p>
         <h3>{content.title}</h3>
         <div className="collapsible">
           <p className="authors">

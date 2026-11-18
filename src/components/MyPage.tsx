@@ -41,7 +41,7 @@ export function MyPage({ onGo }: { onGo: (route: Route) => void }) {
                 <li key={content.id}>
                   <button type="button" onClick={() => onGo({ view: 'session', id: session.id })}>
                     <strong>{content.title}</strong>
-                    <span>{session.title}</span>
+                    <span>{dayLabel(session.date)} {content.startTime}–{content.endTime} · {session.title}</span>
                   </button>
                 </li>
               ))}

@@ -19,7 +19,7 @@ export function getOtherAppearances(sessions: Session[], author: string, current
             sessionId: session.id,
             sessionTitle: session.title,
             date: session.date,
-            startTime: session.startTime,
+            startTime: content.startTime,
             contentTitle: content.title,
           })),
   )
@@ -47,7 +47,7 @@ export function getPersonEntries(sessions: Session[], person: string): PersonEnt
         sessionId: session.id,
         sessionTitle: session.title,
         date: session.date,
-        startTime: session.startTime,
+        startTime: content.startTime,
         room: session.room,
       })),
   )

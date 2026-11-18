@@ -4,6 +4,8 @@ export interface ConferenceContent {
   id: string
   title: string
   authors: string[]
+  startTime: string
+  endTime: string
   abstract: string
   keywords: string[]
 }
